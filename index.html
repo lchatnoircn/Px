@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#050505">
+<title>PX</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="PX">
+<style>
+:root{--bg:#050505;--fg:#f2f2f2;--mut:#8a8a8a;--ac:#f07a2a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#050505}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#050505;color:var(--fg);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none}
+#app{height:100%;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 22px 0;flex-shrink:0}
+#ttl{font-size:44px;font-weight:800;letter-spacing:.14em;line-height:1;margin:0}
+#sub{color:var(--mut);letter-spacing:.14em;font-size:15px;margin-top:8px}
+#pill{display:flex;align-items:center;gap:8px;border:1px solid #2a2a2a;background:#0e0e0e;border-radius:22px;padding:11px 18px;color:var(--mut);font-weight:700;letter-spacing:.18em;font-size:14px}
+#pill i{width:9px;height:9px;border-radius:50%;background:#666}
+#pill.on i{background:var(--ac)}
+.tab{display:none;flex:1;min-height:0;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch}
+.tab.on{display:block}
+#t0.on{display:flex;flex-direction:column;padding:0}
+.stage{position:relative;flex:1;min-height:0}
+#orb{position:absolute;inset:0;touch-action:manipulation}
+#cap{min-height:92px;max-height:150px;overflow-y:auto;padding:6px 26px 14px;text-align:center;color:#8a8a8a;font-size:18px;line-height:1.45}
+#cap b{display:block;color:#d9d9d9;font-weight:500;margin-top:6px}
+.bar{display:flex;gap:12px;padding:14px 22px;border-top:1px solid #1c1c1c;flex-shrink:0}
+input,select,textarea{width:100%;background:#131313;border:1px solid #2a2a2a;color:var(--fg);border-radius:14px;padding:12px 14px;font:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--ac)}
+input[type=range]{padding:0;height:30px;accent-color:var(--ac)}
+input[type=color]{height:44px;padding:4px}
+input[type=checkbox]{width:auto}
+.bar input{height:56px;border-radius:16px}
+button{font:inherit;color:inherit;cursor:pointer}
+.send{width:68px;height:62px;border-radius:16px;border:0;background:color-mix(in srgb,var(--ac) 38%,#000);color:#000;display:grid;place-items:center;flex-shrink:0}
+.send svg{width:26px;height:26px}
+.b{background:color-mix(in srgb,var(--ac) 30%,#0a0a0a);border:1px solid color-mix(in srgb,var(--ac) 55%,#000);border-radius:12px;padding:11px 16px;color:#fff}
+.b.g{background:#141414;border-color:#2a2a2a}
+.card{background:#0e0e0e;border:1px solid #1f1f1f;border-radius:16px;padding:14px;margin-bottom:14px}
+h2{font-size:20px;margin:4px 0 12px}
+h3{font-size:15px;margin:0 0 8px;color:#cfcfcf}
+.mut{color:var(--mut);font-size:14px}
+label{display:block;color:#a8a8a8;font-size:14px;margin:12px 0 6px}
+.row{display:flex;gap:10px;align-items:center}
+.row>*{flex:1}
+.sw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.sw span{width:34px;height:34px;border-radius:50%;border:2px solid #333}
+.res{border-top:1px solid #1f1f1f;padding:10px 0}
+.res:first-child{border:0}
+.res b{display:block}
+.res p{margin:4px 0 0;color:#a8a8a8;font-size:14px}
+.pk{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #1f1f1f}
+.pk:first-of-type{border:0}
+.prog{height:4px;background:#1c1c1c;border-radius:2px;margin-top:10px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--ac)}
+nav{display:flex;border-top:1px solid #1c1c1c;flex-shrink:0;background:#050505}
+nav button{flex:1;background:none;border:0;color:#8f8f8f;font-size:11.5px;font-weight:600;padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+nav button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+nav button.on{color:var(--ac)}
+nav svg{width:28px;height:28px}
+#toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1c1c1c;border:1px solid #333;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;max-width:88%;text-align:center}
+#toast.on{opacity:1}
+</style></head>
+<body>
+<div id="app">
+<header><div><h1 id="ttl">PX</h1><div id="sub"></div></div><div id="pill"><i></i><span id="pt">OFFLINE</span></div></header>
+<section class="tab on" id="t0">
+  <div class="stage"><canvas id="orb"></canvas></div>
+  <div id="cap"></div>
+  <div class="bar"><input id="q" enterkeyhint="send" autocomplete="off"><button class="send" id="go" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 11l7-7 7 7"/></svg></button></div>
+</section>
+<section class="tab" id="t1"></section>
+<section class="tab" id="t2"></section>
+<section class="tab" id="t3"></section>
+<section class="tab" id="t4"></section>
+<nav id="nav"></nav>
+</div>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const DS={name:'PX',sub:'100% hors ligne',ac:'#f07a2a',tabs:['PX','Commandes','Savoir','Réglages','LCN'],detail:2,speed:1,lw:1,lang:'fr-FR',rate:1,voice:'',user:'',talk:true};
+let S={...DS,...ld('px_s',{})},C=ld('px_c',[]),st='idle',segs=[],bd=0;
+const nz=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2800)};
+
+/* ---------- Navigation ---------- */
+const IC=[
+`<circle cx='12' cy='12' r='8' fill='none' stroke='currentColor' stroke-width='2.6'/>`,
+`<rect x='3' y='4' width='18' height='16' rx='3' fill='currentColor'/><path d='M7 9l3 2-3 2M12 14h4' stroke='#050505' stroke-width='1.8' fill='none' stroke-linecap='round'/>`,
+`<g fill='currentColor'><rect x='3' y='4' width='4' height='16' rx='1'/><rect x='9' y='4' width='4' height='16' rx='1'/><rect x='15' y='6' width='4' height='14' rx='1' transform='rotate(-12 17 13)'/></g>`,
+`<g fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='12' r='3.2'/><path d='M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1'/></g>`,
+`<g fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='8' r='3.6'/><path d='M4.5 20c.8-4 3.7-6 7.5-6s6.7 2 7.5 6'/></g>`];
+let cur=0;
+function nav(){$('#nav').innerHTML=S.tabs.map((n,i)=>`<button class="${i==cur?'on':''}" onclick="go(${i})"><svg viewBox="0 0 24 24">${IC[i]}</svg><span>${esc(n)}</span></button>`).join('')}
+function go(i){cur=i;document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j==i));nav();if(i==1)rc();if(i==2)rk();if(i==3)rset();if(i==4)rl();if(i==0)setTimeout(rs,30)}
+
+/* ---------- Sphère nid-d'abeilles (polyèdre de Goldberg) ---------- */
+function build(d){
+ const t=(1+Math.sqrt(5))/2,nm=p=>{const l=Math.hypot(...p);return p.map(x=>x/l)};
+ let v=[[-1,t,0],[1,t,0],[-1,-t,0],[1,-t,0],[0,-1,t],[0,1,t],[0,-1,-t],[0,1,-t],[t,0,-1],[t,0,1],[-t,0,-1],[-t,0,1]].map(nm);
+ let f=[[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]];
+ for(let s=0;s<d;s++){const m={},nf=[];
+  const mid=(a,b)=>{const k=a<b?a+'_'+b:b+'_'+a;if(m[k]==null){v.push(nm(v[a].map((x,i)=>x+v[b][i])));m[k]=v.length-1}return m[k]};
+  f.forEach(([a,b,c])=>{const ab=mid(a,b),bc=mid(b,c),ca=mid(c,a);nf.push([a,ab,ca],[b,bc,ab],[c,ca,bc],[ab,bc,ca])});f=nf}
+ const ce=f.map(([a,b,c])=>nm([0,1,2].map(i=>v[a][i]+v[b][i]+v[c][i]))),E={};
+ f.forEach((fc,i)=>{for(let j=0;j<3;j++){const a=fc[j],b=fc[(j+1)%3],k=a<b?a+'_'+b:b+'_'+a;(E[k]=E[k]||[]).push(i)}});
+ return Object.values(E).filter(e=>e.length==2).map(([i,j])=>[...ce[i],...ce[j]]);
+}
+const cv=$('#orb'),cx=cv.getContext('2d');let W=0,H=0,dpr=1,lvl=.05,ay0=0,lt=0;
+function rs(){const r=cv.parentElement.getBoundingClientRect();dpr=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr}
+new ResizeObserver(rs).observe(cv.parentElement);
+function fr(ms){
+ requestAnimationFrame(fr);if(cur!=0||!W)return;
+ const t=ms/1000,dt=Math.min(t-lt,.05);lt=t;
+ const tg=st=='listen'?.5+.25*Math.sin(t*5):st=='speak'?.3+.45*Math.abs(Math.sin(t*9)*Math.sin(t*3.3)):st=='think'?.25+.1*Math.sin(t*8):.04+.03*Math.sin(t*1.5);
+ lvl+=(tg-lvl)*.12;
+ ay0+=dt*(.22+lvl*.9)*S.speed;
+ cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,H);
+ const R=Math.min(W,H)*.4*(1+lvl*.1),ca=Math.cos(ay0),sa=Math.sin(ay0),ax=.42,cX=Math.cos(ax),sX=Math.sin(ax),mx=W/2,my=H/2,w=lvl*.06;
+ const P=(x,y,z)=>{const k=1+w*Math.sin(x*4+z*3+t*6);let X=(x*ca+z*sa)*k,Z=(-x*sa+z*ca)*k,Y=y*k;const Y2=Y*cX-Z*sX,Z2=Y*sX+Z*cX,f=3/(3-Z2);return[mx+X*R*f,my+Y2*R*f,Z2]};
+ const fp=new Path2D(),bp=new Path2D();
+ for(const s of segs){const a=P(s[0],s[1],s[2]),b=P(s[3],s[4],s[5]);const p=(a[2]+b[2])>0?fp:bp;p.moveTo(a[0],a[1]);p.lineTo(b[0],b[1])}
+ cx.strokeStyle=S.ac;cx.lineJoin=cx.lineCap='round';
+ cx.globalAlpha=.28;cx.lineWidth=.5*S.lw;cx.stroke(bp);
+ cx.shadowColor=S.ac;cx.shadowBlur=3+lvl*14;cx.globalAlpha=.9;cx.lineWidth=.8*S.lw;cx.stroke(fp);
+ cx.globalAlpha=.55;cx.lineWidth=.7*S.lw;cx.beginPath();cx.arc(mx,my,R*(1.0),0,7);cx.stroke();
+ cx.shadowBlur=0;cx.globalAlpha=1;
+}
+
+/* ---------- Savoir : base locale IndexedDB ---------- */
+const db=new Promise((res,rej)=>{try{const r=indexedDB.open('px_kb',1);r.onupgradeneeded=()=>r.result.createObjectStore('a',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej()}catch(e){rej()}});
+const all=async()=>{try{const d=await db;return await new Promise(r=>{const q=d.transaction('a').objectStore('a').getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>r([])})}catch{return[]}};
+const put=async a=>{try{const d=await db;return await new Promise(r=>{const t=d.transaction('a','readwrite'),s=t.objectStore('a');a.forEach(x=>s.put(x));t.oncomplete=t.onerror=()=>r()})}catch{}};
+const wipeKb=async()=>{try{const d=await db;return await new Promise(r=>{const t=d.transaction('a','readwrite');t.objectStore('a').clear();t.oncomplete=()=>r()})}catch{}};
+const SEED=[
+['Soleil','Le Soleil est l’étoile au centre du Système solaire. Il contient 99,86 % de la masse du système et sa surface avoisine 5 500 °C. Sa lumière met environ 8 minutes à atteindre la Terre.'],
+['Terre','La Terre est la troisième planète du Système solaire en partant du Soleil et la seule connue pour abriter la vie. Elle a environ 4,54 milliards d’années et 71 % de sa surface est recouverte d’eau.'],
+['Lune','La Lune est l’unique satellite naturel de la Terre. Elle orbite à environ 384 000 km et fait un tour complet en 27,3 jours.'],
+['Eau','L’eau est un composé chimique de formule H2O. Elle est liquide entre 0 et 100 °C à pression normale et indispensable à toute forme de vie connue.'],
+['ADN','L’ADN, acide désoxyribonucléique, est la molécule qui porte l’information génétique des êtres vivants. Sa structure en double hélice a été décrite en 1953.'],
+['Internet','Internet est le réseau mondial qui relie des millions de réseaux informatiques grâce au protocole TCP/IP. Il est né des travaux d’ARPANET à la fin des années 1960.'],
+['Paris','Paris est la capitale de la France. Traversée par la Seine, elle compte environ 2,1 millions d’habitants et plus de 12 millions avec son agglomération.'],
+['France','La France est un pays d’Europe de l’Ouest dont la capitale est Paris. Elle compte environ 68 millions d’habitants et sa langue officielle est le français.'],
+['Albert Einstein','Albert Einstein, 1879-1955, est un physicien théoricien d’origine allemande. Il a formulé la relativité restreinte et générale et reçu le prix Nobel de physique en 1921.'],
+['Napoléon Bonaparte','Napoléon Bonaparte, 1769-1821, est un général puis empereur des Français de 1804 à 1815. Il est mort en exil à Sainte-Hélène.']
+].map(([title,text])=>({id:'s:'+title,l:'fr',title,k:nz(title),text,seed:1}));
+async function search(t,n=1){
+ const k=nz(t),w=k.split(' ').filter(x=>x.length>1);if(!k)return[];
+ const rows=SEED.concat(await all()),sc=[];
+ for(const r of rows){let s=0;if(r.k==k)s=100;else if(r.k.includes(k))s=60-Math.min(r.k.length-k.length,30);else if(w.length&&w.every(x=>r.k.includes(x)))s=40;if(s)sc.push([s,r])}
+ if(!sc.length){const lt=t.toLowerCase();rows.forEach(r=>{if(r.text.toLowerCase().includes(lt))sc.push([10,r])})}
+ return sc.sort((a,b)=>b[0]-a[0]).slice(0,n).map(x=>x[1]);
+}
+const PACKS=[
+['Sciences',['physique','chimie','biologie','astronomie','mathématiques','géologie']],
+['Histoire',['histoire de France','Empire romain','Seconde Guerre mondiale','Révolution française','Moyen Âge','Antiquité']],
+['Géographie',['pays','capitale','fleuve','montagne','océan','île']],
+['Corps et santé',['anatomie','maladie','médicament','nutrition','cerveau','cœur']],
+['Technologie',['informatique','Internet','électronique','Linux','robotique','énergie']],
+['Culture',['littérature','peinture','musique','cinéma','philosophie','mythologie']],
+['Nature',['animal','plante','oiseau','mammifère','climat','écologie']]];
+async function wsearch(l,term,off){
+ const u=`https://${l}.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${encodeURIComponent(term)}&gsrnamespace=0&gsrlimit=20&gsroffset=${off}&prop=extracts&exintro=1&explaintext=1&exlimit=max`;
+ const j=await (await fetch(u)).json();
+ return Object.values(j.query?.pages||{}).filter(p=>p.extract&&p.extract.length>40).map(p=>({id:l+':'+p.title,l,title:p.title,k:nz(p.title),text:p.extract.slice(0,1500)}));
+}
+let dl=null;
+async function download(jobs,l,pages){
+ if(dl){dl.stop=true;return}
+ dl={stop:false};let n=0,tot=jobs.length*pages,i=0;rk(true);
+ try{
+  for(const term of jobs){for(let p=0;p<pages;p++){
+   if(dl.stop)throw 'stop';
+   const rows=await wsearch(l,term,p*20);if(!rows.length)break;
+   await put(rows);n+=rows.length;i++;
+   $('#dlp').style.width=(100*i/tot)+'%';$('#dls').textContent=`${n} articles téléchargés — « ${term} »`;
+  }i+=pages-Math.min(pages,1)*0}
+  toast('Téléchargement terminé : '+n+' articles');
+ }catch(e){toast(e==='stop'?'Téléchargement arrêté':'Réseau indisponible ou bloqué par l’hébergeur de la page')}
+ dl=null;rk();
+}
+async function rk(keep){
+ const rows=await all(),est=navigator.storage?.estimate?await navigator.storage.estimate().catch(()=>null):null;
+ const mb=est?` — ${(est.usage/1048576).toFixed(1)} Mo utilisés sur ${(est.quota/1048576).toFixed(0)} Mo`:'';
+ const busy=!!dl,lang=(window._wl||'fr');
+ $('#t2').innerHTML=`<h2>Savoir hors ligne</h2>
+ <div class="card"><input id="ks" placeholder="Chercher dans la base…" oninput="ksr(this.value)" value="${esc(window._kq||'')}"><div id="kr" class="mut" style="margin-top:8px"></div></div>
+ <div class="card"><h3>Base locale</h3><div class="mut">${rows.length+SEED.length} articles disponibles sans connexion${mb}</div>
+ <div class="prog"><i id="dlp"></i></div><div class="mut" id="dls" style="margin-top:6px">${busy?'Téléchargement en cours…':'Packs Wikipédia en français, à télécharger une fois en ligne.'}</div>
+ <label>Profondeur par thème</label><select id="dd"><option value="3">Légère (60 articles par thème)</option><option value="10" selected>Moyenne (200)</option><option value="30">Profonde (600)</option></select>
+ <div style="margin-top:12px" class="row"><button class="b" onclick="dlAll()">${busy?'Arrêter':'Tout télécharger'}</button><button class="b g" onclick="wipeAsk(this)">Vider la base</button></div></div>
+ <div class="card"><h3>Packs thématiques</h3>${PACKS.map((p,i)=>`<div class="pk"><div>${p[0]}<div class="mut">${p[1].length} thèmes</div></div><button class="b g" onclick="dlPack(${i})">Télécharger</button></div>`).join('')}</div>
+ <div class="card"><h3>Autre sujet</h3><div class="row"><input id="ct" placeholder="Ex : volcans"><select id="cl" style="max-width:90px"><option>fr</option><option>en</option><option>es</option><option>de</option></select></div><button class="b" style="margin-top:10px;width:100%" onclick="dlCustom()">Télécharger ce sujet</button></div>`;
+ if(keep)return;ksr(window._kq||'');
+}
+const dd=()=>+($('#dd')?.value||10);
+const dlAll=()=>download(PACKS.flatMap(p=>p[1]),'fr',dd());
+const dlPack=i=>download(PACKS[i][1],'fr',dd());
+const dlCustom=()=>{const t=$('#ct').value.trim();if(t)download([t],$('#cl').value,dd())};
+let wc=0;const wipeAsk=b=>{if(wc){wipeKb().then(()=>{toast('Base vidée');rk()});wc=0}else{wc=1;b.textContent='Confirmer ?';setTimeout(()=>{wc=0;b.textContent='Vider la base'},3000)}};
+async function ksr(q){window._kq=q;const el=$('#kr');if(!el)return;if(!q.trim()){el.innerHTML='';return}const r=await search(q,6);el.innerHTML=r.length?r.map(x=>`<div class="res"><b>${esc(x.title)}</b><p>${esc(x.text.slice(0,220))}…</p></div>`).join(''):'Aucun résultat dans la base locale.'}
+
+/* ---------- Assistant ---------- */
+const sents=t=>t.replace(/\s+/g,' ').split(/(?<=[.!?])\s+/).slice(0,3).join(' ').slice(0,420);
+async function answer(q){
+ const n=nz(q);
+ for(const c of C){if(c.t&&n.includes(nz(c.t))){if(c.k=='url'){setTimeout(()=>window.open(c.r,'_blank'),700);return 'J’ouvre '+c.t+'.'}return c.r}}
+ if(/qui es tu|tu es qui|comment tu t appelles/.test(n))return `Je suis ${S.name}, un assistant vocal qui fonctionne sans connexion.${S.user?' Ravi de te retrouver, '+S.user+'.':''}`;
+ if(/\bheure\b/.test(n)){const d=new Date();return `Il est ${d.getHours()} heures ${String(d.getMinutes()).padStart(2,'0')}.`}
+ if(/quel jour|quelle date|date d aujourd/.test(n))return 'Nous sommes le '+new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'.';
+ if(/^(bonjour|salut|coucou|hello)/.test(n))return 'Bonjour'+(S.user?' '+S.user:'')+' ! Que puis-je faire pour toi ?';
+ let tp=n.replace(/^(parle moi (du|de la|de l|des|de|d)?|qui est|qui etait|c est quoi|qu est ce que|qu est ce qu|que sais tu (sur|de)|dis moi ce que tu sais sur|cherche|definition de)\s*/,'').replace(/^(le|la|les|l|un|une|du|de|des|d)\s+/,'').trim();
+ const r=(await search(tp,1))[0];
+ if(r)return sents(r.text);
+ if(navigator.onLine){try{const j=await (await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(tp)}`)).json();if(j.extract)return sents(j.extract)}catch{}}
+ return `Je n’ai rien sur « ${tp} » pour l’instant. Télécharge des packs dans l’onglet ${S.tabs[2]}.`;
+}
+function showCap(q,a){$('#cap').innerHTML=q?`${esc(q)}<b>${esc(a)}</b>`:hint()}
+const hint=()=>`Dis quelque chose à ${esc(S.name)}. Ex : « Qui es-tu ? », « Parle-moi du Soleil », « Quelle heure est-il ? »`;
+async function ask(q){q=q.trim();if(!q)return;st='think';showCap(q,'…');let a;try{a=await answer(q)}catch{a='Une erreur est survenue.'}showCap(q,a);speak(a)}
+function speak(a){
+ if(!S.talk||!window.speechSynthesis){st='idle';return}
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(a);u.lang=S.lang;u.rate=S.rate;
+ const v=speechSynthesis.getVoices().find(v=>v.name==S.voice);if(v)u.voice=v;
+ u.onend=u.onerror=()=>{st='idle'};st='speak';speechSynthesis.speak(u);
+}
+let rec;
+function listen(){
+ if(st=='listen'){rec&&rec.stop();return}
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){toast('Micro indisponible ici : utilise le clavier');return}
+ window.speechSynthesis&&speechSynthesis.cancel();
+ rec=new SR();rec.lang=S.lang;rec.interimResults=true;let fin='';
+ rec.onresult=e=>{fin=[...e.results].map(r=>r[0].transcript).join('');$('#cap').textContent=fin};
+ rec.onend=()=>{st='idle';if(fin.trim())ask(fin);else showCap('','')};
+ rec.onerror=e=>{st='idle';toast('Micro : '+(e.error=='not-allowed'?'accès refusé':e.error))};
+ st='listen';$('#cap').textContent='J’écoute…';try{rec.start()}catch{st='idle'}
+}
+$('#orb').addEventListener('click',listen);
+$('#go').onclick=()=>{const q=$('#q');ask(q.value);q.value=''};
+$('#q').addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();$('#go').click()}});
+
+/* ---------- Commandes ---------- */
+function rc(){
+ $('#t1').innerHTML=`<h2>Commandes</h2>
+ <div class="card"><h3>Nouvelle commande</h3><label>Quand je dis…</label><input id="ct1" placeholder="Ex : allume la lumière"><label>Action</label><select id="ck"><option value="say">Répondre par un texte</option><option value="url">Ouvrir un lien</option></select><label>Réponse ou adresse</label><input id="cr" placeholder="Ex : C’est fait"><button class="b" style="margin-top:14px;width:100%" onclick="addC()">Ajouter</button></div>
+ <div class="card"><h3>Mes commandes (${C.length})</h3>${C.length?C.map((c,i)=>`<div class="pk"><div style="min-width:0"><b>${esc(c.t)}</b><div class="mut" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.k=='url'?'Ouvre ':''}${esc(c.r)}</div></div><button class="b g" onclick="delC(${i})">Supprimer</button></div>`).join(''):'<div class="mut">Aucune commande personnalisée.</div>'}</div>
+ <div class="card"><h3>Intégrées</h3><div class="mut">« Qui es-tu ? », « Quelle heure est-il ? », « Quel jour sommes-nous ? », « Parle-moi de… », « C’est quoi… ».</div></div>`;
+}
+function addC(){const t=$('#ct1').value.trim(),r=$('#cr').value.trim(),k=$('#ck').value;if(!t||!r){toast('Remplis la phrase et la réponse');return}if(k=='url'&&!/^https?:\/\//.test(r)){toast('L’adresse doit commencer par https://');return}C.push({t,r,k});sv('px_c',C);rc()}
+function delC(i){C.splice(i,1);sv('px_c',C);rc()}
+
+/* ---------- Réglages ---------- */
+function rset(){
+ const vs=(window.speechSynthesis?speechSynthesis.getVoices():[]).filter(v=>v.lang.slice(0,2)==S.lang.slice(0,2));
+ $('#t3').innerHTML=`<h2>Réglages</h2><div class="card">
+ <label>Langue de la voix</label><select onchange="U('lang',this.value);rset()">${[['fr-FR','Français'],['en-US','English'],['es-ES','Español'],['de-DE','Deutsch']].map(l=>`<option value="${l[0]}" ${S.lang==l[0]?'selected':''}>${l[1]}</option>`).join('')}</select>
+ <label>Voix</label><select onchange="U('voice',this.value)"><option value="">Par défaut</option>${vs.map(v=>`<option ${S.voice==v.name?'selected':''}>${esc(v.name)}</option>`).join('')}</select>
+ <label>Vitesse de parole : ${S.rate}</label><input type="range" min=".6" max="1.6" step=".1" value="${S.rate}" oninput="U('rate',+this.value);this.previousElementSibling.textContent='Vitesse de parole : '+this.value">
+ <label class="row" style="justify-content:space-between;color:#d9d9d9"><span style="flex:3">Répondre à voix haute</span><input type="checkbox" ${S.talk?'checked':''} onchange="U('talk',this.checked)" style="flex:0 0 24px;height:24px"></label>
+ <button class="b" style="margin-top:14px;width:100%" onclick="speak('Bonjour, je suis '+S.name+'.')">Tester la voix</button></div>
+ <div class="card"><h3>Réseau</h3><div class="mut">La reconnaissance vocale d’iOS peut nécessiter une connexion. Sans réseau, écris tes questions : les réponses viennent de la base de l’onglet ${esc(S.tabs[2])}.</div></div>`;
+}
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=()=>{if(cur==3)rset()};
+
+/* ---------- LCN : données et personnalisation ---------- */
+const SW=['#f07a2a','#ff4d6d','#35d0ba','#4da3ff','#b07cff','#f5d547','#ffffff'];
+function U(k,v){S[k]=v;sv('px_s',S);ap()}
+function UT(i,v){S.tabs[i]=v||DS.tabs[i];sv('px_s',S);nav()}
+function rl(){
+ $('#t4').innerHTML=`<h2>${esc(S.tabs[4])}</h2>
+ <div class="card"><h3>Profil</h3><label>Ton prénom</label><input value="${esc(S.user)}" oninput="U('user',this.value)" placeholder="Prénom">
+ <label>Nom de l’assistant</label><input value="${esc(S.name)}" oninput="U('name',this.value||'PX')">
+ <label>Sous-titre</label><input value="${esc(S.sub)}" oninput="U('sub',this.value)"></div>
+ <div class="card"><h3>Couleur</h3><input type="color" id="cc" value="${S.ac}" oninput="U('ac',this.value)"><div class="sw">${SW.map(c=>`<span style="background:${c}" onclick="U('ac','${c}');$('#cc').value='${c}'"></span>`).join('')}</div></div>
+ <div class="card"><h3>Sphère</h3><label>Densité des alvéoles</label><select onchange="U('detail',+this.value)"><option value="1" ${S.detail==1?'selected':''}>Large</option><option value="2" ${S.detail==2?'selected':''}>Moyenne</option><option value="3" ${S.detail==3?'selected':''}>Fine</option></select>
+ <label>Vitesse de rotation</label><input type="range" min=".2" max="3" step=".1" value="${S.speed}" oninput="U('speed',+this.value)">
+ <label>Épaisseur du trait</label><input type="range" min=".5" max="3" step=".1" value="${S.lw}" oninput="U('lw',+this.value)"></div>
+ <div class="card"><h3>Noms des onglets</h3>${S.tabs.map((n,i)=>`<input style="margin-bottom:8px" value="${esc(n)}" oninput="UT(${i},this.value)">`).join('')}</div>
+ <div class="card"><h3>Mes données</h3><div class="mut">Prénom, réglages, couleurs et commandes. Tout reste sur cet appareil.</div>
+ <div class="row" style="margin-top:12px"><button class="b" onclick="ex()">Exporter</button><button class="b g" onclick="im()">Importer</button></div>
+ <textarea id="dj" rows="5" style="margin-top:10px;font-size:13px" placeholder="Colle ici une sauvegarde à importer"></textarea>
+ <button class="b g" style="margin-top:12px;width:100%" id="rz" onclick="rz()">Tout réinitialiser</button></div>`;
+}
+function ex(){const j=JSON.stringify({s:S,c:C});$('#dj').value=j;navigator.clipboard?.writeText(j).then(()=>toast('Sauvegarde copiée')).catch(()=>toast('Sélectionne le texte pour le copier'))}
+function im(){try{const o=JSON.parse($('#dj').value);S={...DS,...o.s};C=o.c||[];sv('px_s',S);sv('px_c',C);ap();rl();toast('Données importées')}catch{toast('Sauvegarde illisible')}}
+let rzc=0;function rz(){const b=$('#rz');if(rzc){S={...DS};C=[];sv('px_s',S);sv('px_c',C);rzc=0;ap();rl();toast('Réinitialisé')}else{rzc=1;b.textContent='Confirmer la réinitialisation ?';setTimeout(()=>{rzc=0;if($('#rz'))$('#rz').textContent='Tout réinitialiser'},3000)}}
+
+/* ---------- Application ---------- */
+function ap(){
+ document.documentElement.style.setProperty('--ac',S.ac);
+ $('#ttl').textContent=S.name;$('#sub').textContent=S.sub;document.title=S.name;
+ $('#q').placeholder='Parle à '+S.name+'…';
+ if(S.detail!=bd){bd=S.detail;segs=build(bd)}
+ if(st=='idle'&&!$('#cap').dataset.u)$('#cap').innerHTML=hint();
+ nav();net();
+}
+function net(){const o=navigator.onLine;$('#pill').classList.toggle('on',o);$('#pt').textContent=o?'ONLINE':'OFFLINE'}
+addEventListener('online',net);addEventListener('offline',net);
+try{navigator.storage?.persist?.()}catch{}
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+ap();rs();requestAnimationFrame(fr);
+</script>
+</body></html>
